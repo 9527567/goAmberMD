@@ -252,7 +252,7 @@ func Temp() {
 		if len(s[i]) == 47 {
 			Res = append(
 				Res,
-				strings.Trim(s[i][6:10], " "),
+				strings.Trim(s[i][5:10], " "),
 			)
 		}
 	}
