@@ -1,37 +1,13 @@
 package service
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"go_amber/config"
-	"os/exec"
-	"sort"
 	"strings"
 )
 
-func RunCmd(cmdStr string) string {
-	cmd := exec.Command("bash", "-c", cmdStr)
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		return stderr.String()
-	} else {
-		return out.String()
-	}
-}
-func in(target string, strArray []string) bool {
-	sort.Strings(strArray)
-	index := sort.SearchStrings(strArray, target)
-	if index < len(strArray) && strArray[index] == target {
-		return true
-	}
-	return false
-}
-
+// 已知的残基名称
 type Name struct {
 	Protein []string `json:"Protein"`
 	DNA     []string `json:"DNA"`
@@ -41,6 +17,7 @@ type Name struct {
 	Solvent []string `json:"Solvent"`
 }
 
+// 从字符串中返回结构体
 func getName() Name {
 	knowName := `{
   "Protein": [
@@ -258,6 +235,7 @@ func Temp() {
 	fmt.Println(numProtein, numDNA, numRNA, numLipid, numCarbo, numSolvent)
 }
 
+// 输入的所有参数
 type Input struct {
 	imin          bool    // 是否执行最小化任务
 	ntmin         int     // 最小化任务的标志
@@ -288,6 +266,16 @@ type Input struct {
 	// flexiblewat int
 }
 
-func CreateMinInput() {
+// 如何优雅的创建输入文件？
+func CreateMinInput(task string, ntmin int, restraintmask string, restrain_wt float64) []string {
+
+	var result []string
+	//result = append(result, "Minimization: "+task+"\n")
+	//result = append(result, " &cntrl\n")
+	//result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,")
+	//
+	//result = append(result, "\n&end")
+
+	return result
 
 }

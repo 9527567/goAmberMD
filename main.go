@@ -1,7 +1,11 @@
 package main
 
-import "go_amber/service"
+import (
+	"fmt"
+	"go_amber/service"
+)
 
 func main() {
-	service.Temp()
+	input := service.CreateMinInput("step1", 1, "1:2080", 8.0)
+	fmt.Println(input)
 }
