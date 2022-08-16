@@ -215,7 +215,7 @@ func getName() Name {
 	return name
 }
 
-func SystemNumbers(SymtemRes []string) (int, int, int, int, int, int) {
+func SystemNumbers(SystemRes []string) (int, int, int, int, int, int) {
 	numProtein := 0
 	numDNA := 0
 	numRNA := 0
@@ -224,7 +224,7 @@ func SystemNumbers(SymtemRes []string) (int, int, int, int, int, int) {
 	numSolvent := 0
 	//N
 	name := getName()
-	for _, s := range SymtemRes {
+	for _, s := range SystemRes {
 		if in(s, name.Protein) {
 			numProtein++
 		} else if in(s, name.DNA) {
@@ -245,17 +245,49 @@ func SystemNumbers(SymtemRes []string) (int, int, int, int, int, int) {
 func Temp() {
 	opt := config.ParseOption()
 	tmp := "cpptraj " + "-p " + opt.Parm7 + " --resmask " + " \\* "
-	var result string = RunCmd(tmp)
+	result := RunCmd(tmp)
 	s := strings.Split(result, "\n")
 	var Res []string
 	for i := 1; i < len(s); i++ {
 		if len(s[i]) == 47 {
-			Res = append(
-				Res,
-				strings.Trim(s[i][5:10], " "),
-			)
+			// Res = append(Res, strings.Trim(s[i][6:10], " "))
+			Res = append(Res, strings.Fields(s[i])[1])
 		}
 	}
 	numProtein, numDNA, numRNA, numLipid, numCarbo, numSolvent := SystemNumbers(Res)
 	fmt.Println(numProtein, numDNA, numRNA, numLipid, numCarbo, numSolvent)
+}
+
+type Input struct {
+	imin          bool    // 是否执行最小化任务
+	ntmin         int     // 最小化任务的标志
+	maxcyc        int     // 最小化的最大循环次数
+	ncyc          int     // 在ncyc后将最小化方法从最陡下降法切换为共轭梯度法
+	restraintmask string  // 指定约束原子的标记
+	restraint_wt  float64 // 约束原子的力
+	irest         bool    // 是否重启模拟
+	nstlim        int     // 要执行的MD步数
+	ntb           int     // 是否执行周期性边界
+	ntc           int     // SHAKE 执行键长约束的标志
+	cut           float64 // 指定非键截断值，8.0通常是一个不错的选择
+	tempi         float64 // 初始温度
+	tautp         float64 // 时间常数
+	taup          float64 // 压力松弛时间
+	mcbarint      int     // 作为蒙特卡洛恒压器的一部分执行的体积更改尝试之间的步数 默认值为 100
+	gamma_ln      float64 // 以ps为单位的碰撞频率
+	dt            int     // 时间步长
+	nscm          int     // pbc处理选项，对于周期性系统，平移被修正，旋转不会
+	ntwx          int     // 每 ntwx 步，坐标将被写入 netcdf 文件 如果ntwx = 0，没有坐标 轨迹文件将被写入 默认 = 0
+	ntpr          int     // 每 ntpr 步,能量信息将以人类可读的形式打印到文件mdout和mdinfo.mdinfo每次关闭又重新打开，所以它总是包含最新的能量和温度 默认 50
+	ntwr          int     // 每ntwr步，写入重启文件的运动快照
+	//previousref   int
+	//heavyrst      int
+	//bbrst         int
+	thermo   string //
+	barostat int    // 用于控制使用哪个恒压器来控制压力的标志。
+	// flexiblewat int
+}
+
+func CreateMinInput() {
+
 }
