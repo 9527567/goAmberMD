@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"reflect"
 	"sort"
+	"strings"
 )
 
 // CheckFileExist 检查文件是否存在
@@ -33,12 +34,20 @@ func RunCmd(cmdStr string) string {
 	}
 }
 
-// 判断字符串是否在字符串数组中
-func in(target string, strArray []string) bool {
-	sort.Strings(strArray)
-	index := sort.SearchStrings(strArray, target)
-	if index < len(strArray) && strArray[index] == target {
-		return true
+// 判断字符串是否在字符串数组中,二分查找
+func in(target string, strArray []string, ignoreCase bool) bool {
+	if ignoreCase {
+		for index, s := range strArray {
+			if index < len(strArray) && strings.EqualFold(s, target) {
+				return true
+			}
+		}
+	} else {
+		sort.Strings(strArray)
+		index := sort.SearchStrings(strArray, target)
+		if index < len(strArray) && strArray[index] == target {
+			return true
+		}
 	}
 	return false
 }
