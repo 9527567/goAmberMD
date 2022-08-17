@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
-	input := service.CreateMinInput("step1", 1, "1:2080", 8.0)
-	fmt.Println(input)
+	var input service.Input
+	var inputS []string
+	inputS = append(inputS, "Mini")
+	fmt.Println(input.CreateMinInput(inputS))
+
 }

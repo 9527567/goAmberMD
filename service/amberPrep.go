@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// 已知的残基名称
+// Name 已知的残基名称
 type Name struct {
 	Protein []string `json:"Protein"`
 	DNA     []string `json:"DNA"`
@@ -235,47 +235,64 @@ func Temp() {
 	fmt.Println(numProtein, numDNA, numRNA, numLipid, numCarbo, numSolvent)
 }
 
-// 输入的所有参数
+// Input 输入的所有参数
 type Input struct {
-	imin          bool    // 是否执行最小化任务
-	ntmin         int     // 最小化任务的标志
-	maxcyc        int     // 最小化的最大循环次数
-	ncyc          int     // 在ncyc后将最小化方法从最陡下降法切换为共轭梯度法
-	restraintmask string  // 指定约束原子的标记
-	restraint_wt  float64 // 约束原子的力
-	irest         bool    // 是否重启模拟
-	nstlim        int     // 要执行的MD步数
-	ntb           int     // 是否执行周期性边界
-	ntc           int     // SHAKE 执行键长约束的标志
-	cut           float64 // 指定非键截断值，8.0通常是一个不错的选择
-	tempi         float64 // 初始温度
-	tautp         float64 // 时间常数
-	taup          float64 // 压力松弛时间
-	mcbarint      int     // 作为蒙特卡洛恒压器的一部分执行的体积更改尝试之间的步数 默认值为 100
-	gamma_ln      float64 // 以ps为单位的碰撞频率
-	dt            int     // 时间步长
-	nscm          int     // pbc处理选项，对于周期性系统，平移被修正，旋转不会
-	ntwx          int     // 每 ntwx 步，坐标将被写入 netcdf 文件 如果ntwx = 0，没有坐标 轨迹文件将被写入 默认 = 0
-	ntpr          int     // 每 ntpr 步,能量信息将以人类可读的形式打印到文件mdout和mdinfo.mdinfo每次关闭又重新打开，所以它总是包含最新的能量和温度 默认 50
-	ntwr          int     // 每ntwr步，写入重启文件的运动快照
+	Name          string  // 任务名称
+	Imin          int8    // 是否执行最小化任务
+	Ntmin         int     // 最小化任务的标志
+	Maxcyc        int     // 最小化的最大循环次数
+	Ncyc          int     // 在ncyc后将最小化方法从最陡下降法切换为共轭梯度法
+	Restraintmask string  // 指定约束原子的标记
+	Restraint_wt  float64 // 约束原子的力
+	Irest         bool    // 是否重启模拟
+	Nstlim        int     // 要执行的MD步数
+	Ntb           int     // 是否执行周期性边界
+	Ntc           int     // SHAKE 执行键长约束的标志
+	Cut           float64 // 指定非键截断值，8.0通常是一个不错的选择
+	Tempi         float64 // 初始温度
+	Tautp         float64 // 时间常数
+	Taup          float64 // 压力松弛时间
+	Mcbarint      int     // 作为蒙特卡洛恒压器的一部分执行的体积更改尝试之间的步数 默认值为 100
+	Gamma_ln      float64 // 以ps为单位的碰撞频率
+	Dt            float64 // 时间步长
+	Nscm          int     // pbc处理选项，对于周期性系统，平移被修正，旋转不会
+	Ntwx          int     // 每 ntwx 步，坐标将被写入 netcdf 文件 如果ntwx = 0，没有坐标 轨迹文件将被写入 默认 = 0
+	Ntpr          int     // 每 ntpr 步,能量信息将以人类可读的形式打印到文件mdout和mdinfo.mdinfo每次关闭又重新打开，所以它总是包含最新的能量和温度 默认 50
+	Ntwr          int     // 每ntwr步，写入重启文件的运动快照
 	//previousref   int
 	//heavyrst      int
 	//bbrst         int
-	thermo   string //
-	barostat int    // 用于控制使用哪个恒压器来控制压力的标志。
+	Thermo   string //
+	Barostat int    // 用于控制使用哪个恒压器来控制压力的标志。
 	// flexiblewat int
 }
 
-// 如何优雅的创建输入文件？
-func CreateMinInput(task string, ntmin int, restraintmask string, restrain_wt float64) []string {
+// CreateMinInput 如何优雅的创建输入文件？回调函数吗？或者是json
+func (input Input) CreateMinInput(i []string) []string {
+	input.Name = i[0]
+	input.Imin = 1
+	input.Ntmin = 2
+	input.Maxcyc = 1000
+	input.Ncyc = 10
+	input.Ntwx = 500
+	input.Ntpr = 50
+	input.Ntwr = 500
+	input.Restraintmask = ""
+	input.Restraint_wt = 0
+	input.Dt = 0.001
 
 	var result []string
-	//result = append(result, "Minimization: "+task+"\n")
-	//result = append(result, " &cntrl\n")
-	//result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,")
-	//
-	//result = append(result, "\n&end")
-
+	result = append(result, "Minimization: "+input.Name+"\n")
+	result = append(result, " &cntrl\n")
+	result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,")
+	result = append(result, "\n&end")
 	return result
 
 }
+
+//func CreateInput(input Input) {
+//	t, v := ForeachStruct(input)
+//	for i := 0; i < t.NumField(); i++ {
+//		fmt.Println(t.Field(i).Name, v.Field(i).Interface())
+//	}
+//}

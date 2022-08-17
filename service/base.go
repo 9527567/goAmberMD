@@ -2,12 +2,14 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"os/exec"
+	"reflect"
 	"sort"
 )
 
-// 检查文件是否存在
+// CheckFileExist 检查文件是否存在
 func CheckFileExist(fileName string) bool {
 	_, err := os.Stat(fileName)
 	if os.IsNotExist(err) {
@@ -16,7 +18,7 @@ func CheckFileExist(fileName string) bool {
 	return true
 }
 
-// 运行系统命令
+// RunCmd 运行系统命令
 func RunCmd(cmdStr string) string {
 	cmd := exec.Command("bash", "-c", cmdStr)
 	var out bytes.Buffer
@@ -39,4 +41,18 @@ func in(target string, strArray []string) bool {
 		return true
 	}
 	return false
+}
+
+// ForeachStruct 遍历结构体
+func ForeachStruct(obj interface{}) (reflect.Type, reflect.Value) {
+	t := reflect.TypeOf(obj) // 注意，obj不能为指针类型，否则会报：panic recovered: reflect: NumField of non-struct type
+	v := reflect.ValueOf(obj)
+	return t, v
+}
+
+//func toString[T float64|float32|int|int8|int16|int32|int64](params T) string {
+//	return fmt.Sprintf("%v", params)
+//}
+func toString[T interface{}](params T) string {
+	return fmt.Sprintf("%v", params)
 }
