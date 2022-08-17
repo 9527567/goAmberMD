@@ -263,32 +263,104 @@ type Input struct {
 	//heavyrst      int
 	//bbrst         int
 	Thermo   string //
-	Barostat int    // 用于控制使用哪个恒压器来控制压力的标志。
+	Barostat string // 用于控制使用哪个恒压器来控制压力的标志。
 	// flexiblewat int
 }
 
 // CreateMinInput 如何优雅的创建输入文件？回调函数吗？或者是json
 func (input Input) CreateMinInput(option ...string) []string {
-	input.Imin = string(1)
-	input.Ntmin = string(2)
-	input.Maxcyc = string(1000)
-	input.Ncyc = string(10)
-	input.Ntwx = string(500)
-	input.Ntpr = string(50)
-	input.Ntwr = string(500)
+	input.Imin = "1"
+	input.Ntmin = "2"
+	input.Maxcyc = "1000"
+	input.Ncyc = "10"
+	input.Ntwx = "500"
+	input.Ntpr = "50"
+	input.Ntwr = "500"
+	input.Cut = "8.0"
 	input.Restraintmask = ""
-	input.Restraint_wt = string(0)
+	input.Restraint_wt = "0"
 	input.Dt = toString(0.001)
-	k, _ := ForeachStruct(input)
-	var name []string
-	for i := 0; i < k.NumField(); i++ {
-		name = append(name, k.Field(i).Name)
-	}
+	for i := 0; i < len(option)-1; i += 2 {
+		if strings.EqualFold(option[i], "name") {
+			input.Name = option[i+1]
+		}
+		if strings.EqualFold(option[i], "imin") {
+			input.Imin = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ntmin") {
+			input.Ntmin = option[i+1]
+		}
+		if strings.EqualFold(option[i], "maxcyc") {
+			fmt.Println(input.Maxcyc)
+			input.Maxcyc = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ncyc") {
+			input.Ncyc = option[i+1]
+		}
+		if strings.EqualFold(option[i], "restraintmask") {
+			input.Restraintmask = option[i+1]
+		}
+		if strings.EqualFold(option[i], "restraint_wt") {
+			input.Restraint_wt = option[i+1]
+		}
+		if strings.EqualFold(option[i], "irest") {
+			input.Irest = option[i+1]
+		}
+		if strings.EqualFold(option[i], "nstlim") {
+			input.Nstlim = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ntb") {
+			input.Ntb = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ntc") {
+			input.Ntc = option[i+1]
+		}
+		if strings.EqualFold(option[i], "cut") {
+			input.Cut = option[i+1]
+		}
+		if strings.EqualFold(option[i], "tempi") {
+			input.Tempi = option[i+1]
+		}
+		if strings.EqualFold(option[i], "taup") {
+			input.Tautp = option[i+1]
+		}
+		if strings.EqualFold(option[i], "mcbarnt") {
+			input.Mcbarint = option[i+1]
+		}
+		if strings.EqualFold(option[i], "gamma_ln") {
+			input.Gamma_ln = option[i+1]
+		}
+		if strings.EqualFold(option[i], "dt") {
+			input.Dt = option[i+1]
+		}
+		if strings.EqualFold(option[i], "nscm") {
+			input.Nscm = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ntwx") {
+			input.Ntwx = option[i+1]
+		}
+		if strings.EqualFold(option[i], "ntwr") {
+			input.Ntwr = option[i+1]
+		}
+		if strings.EqualFold(option[i], "thermo") {
+			input.Thermo = option[i+1]
+		}
+		if strings.EqualFold(option[i], "barostat") {
+			input.Barostat = option[i+1]
+		}
 
+	}
 	var result []string
 	result = append(result, "Minimization: "+input.Name+"\n")
 	result = append(result, " &cntrl\n")
-	result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,")
+	result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,"+"\n")
+	result = append(result, "ntmin = "+input.Ntmin+",")
+	result = append(result, "maxcyc = "+input.Maxcyc+",")
+	result = append(result, "ncyc = "+input.Ncyc+",")
+	result = append(result, "ntwx = "+input.Ntwx+",")
+	result = append(result, "ntpr = "+input.Ntpr+",")
+	result = append(result, "ntwr = "+input.Ntwr+",")
+	result = append(result, "cut = "+input.Cut+",")
 	result = append(result, "\n&end")
 	return result
 
