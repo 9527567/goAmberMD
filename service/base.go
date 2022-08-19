@@ -59,9 +59,6 @@ func ForeachStruct(obj interface{}) (reflect.Type, reflect.Value) {
 	return t, v
 }
 
-//func toString[T float64|float32|int|int8|int16|int32|int64](params T) string {
-//	return fmt.Sprintf("%v", params)
-//}
-func toString[T interface{}](params T) string {
+func toString[T any](params T) string {
 	return fmt.Sprintf("%v", params)
 }
