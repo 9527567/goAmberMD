@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"go_amber/config"
 	"strings"
 )
 
@@ -184,11 +183,11 @@ func getName() Name {
     "ROH"
   ],
   "CharmmWater": [
-    "TIP3",
+    "TIP3"
   ],
 	"Water":[
 	"WAT"	
-]
+  ]
 }`
 	var name Name
 	err := json.Unmarshal([]byte(knowName), &name)
@@ -232,22 +231,6 @@ func SystemNumbers(SystemRes []string) (int, int, int, int, int, int, int) {
 		CHARMMWATERFLAG = true
 	}
 	return numProtein, numDNA, numRNA, numLipid, numCarbo, nCharmmWater, nWater
-}
-
-func Temp() {
-	opt := config.ParseOption()
-	tmp := "cpptraj " + "-p " + opt.Parm7 + " --resmask " + " \\* "
-	result := RunCmd(tmp)
-	s := strings.Split(result, "\n")
-	var Res []string
-	for i := 1; i < len(s); i++ {
-		if len(s[i]) == 47 {
-			// Res = append(Res, strings.Trim(s[i][6:10], " "))
-			Res = append(Res, strings.Fields(s[i])[1])
-		}
-	}
-	numProtein, numDNA, numRNA, numLipid, numCarbo, nCharmmWater, nWater := SystemNumbers(Res)
-	fmt.Println(numProtein, numDNA, numRNA, numLipid, numCarbo, nCharmmWater, nWater)
 }
 
 // Input 输入的所有参数
