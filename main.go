@@ -6,10 +6,14 @@ import (
 	"go_amber/service"
 )
 
-func main() {
-	//var input service.Input
-	//fmt.Println(input.CreateMinInput("Name", "step1", "Imin", "1", "ntmin", "2"))
-	option := config.ParseOption()
+func StandardEq(option config.Option) {
 	systemInfo := service.GetSystemInfo(&option)
 	fmt.Println(service.CreateRestraintMask(systemInfo, &option))
+}
+
+func main() {
+	option := config.ParseOption()
+	if !option.Norestart {
+		StandardEq(option)
+	}
 }

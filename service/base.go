@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"reflect"
@@ -61,4 +62,49 @@ func ForeachStruct(obj interface{}) (reflect.Type, reflect.Value) {
 
 func toString[T any](params T) string {
 	return fmt.Sprintf("%v", params)
+}
+
+func exists(path string) bool {
+	_, err := os.Stat(path) //os.Stat获取文件信息
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
+}
+func WriteFile(fileName string, content []string) {
+	var file *os.File
+	var err error
+	if exists(fileName) {
+		//使用追加模式打开文件
+		err := os.Remove(fileName)
+		if err != nil {
+			fmt.Println("can not remove file:", err)
+			return
+		}
+		file, err = os.Create(fileName)
+		if err != nil {
+			fmt.Println("create file error:", err)
+			return
+		}
+	} else {
+		//不存在创建文件
+		file, err = os.Create(fileName)
+		if err != nil {
+			fmt.Println("create file error:", err)
+			return
+		}
+	}
+
+	defer file.Close()
+	//写入文件
+	for _, s := range content {
+		_, err := io.WriteString(file, s)
+		if err != nil {
+			fmt.Println("write error:", err)
+			return
+		}
+	}
 }

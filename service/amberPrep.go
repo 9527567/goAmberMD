@@ -361,6 +361,7 @@ func (input Input) CreateMinInput(option ...string) []string {
 	result = append(result, "ntwr = "+input.Ntwr+",")
 	result = append(result, "cut = "+input.Cut+",")
 	result = append(result, "\n")
+	result = append(result, "&end\n")
 	return result
 
 }
@@ -379,11 +380,6 @@ func (input Input) Restraint(option ...string) []string {
 	result = append(result, "restraintmask = "+input.Restraintmask+",")
 	result = append(result, "restraint_wt = "+input.Restraint_wt+",")
 	result = append(result, "\n")
-	return result
-}
-func End() []string {
-	var result []string
-	result = append(result, "&end\n")
 	return result
 }
 

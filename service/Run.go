@@ -38,10 +38,3 @@ func CreateRestraintMask(n []int, option *config.Option) string {
 	}
 	return result
 }
-
-func StandardEq() {
-
-}
-func NoRestartEq() {
-
-}
