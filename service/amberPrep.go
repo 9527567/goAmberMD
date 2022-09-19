@@ -258,6 +258,7 @@ type Input struct {
 	Ntpr          string // 每 ntpr 步,能量信息将以人类可读的形式打印到文件mdout和mdinfo.mdinfo每次关闭又重新打开，所以它总是包含最新的能量和温度 默认 50
 	Ntwr          string // 每ntwr步，写入重启文件的运动快照
 	Ntr           string
+	Ntxo          string
 	Thermo        string //
 	Barostat      string // 用于控制使用哪个恒压器来控制压力的标志。
 	Ncsm          string
@@ -282,6 +283,7 @@ func (input Input) CreateMinInput(option ...string) []string {
 	input.Ntpr = "50"
 	input.Ntwr = "500"
 	input.Cut = "8.0"
+	input.Ntxo = "2"
 	input.Restraintmask = ""
 	input.Restraint_wt = "0"
 	input.Dt = toString(0.001)
@@ -347,19 +349,29 @@ func (input Input) CreateMinInput(option ...string) []string {
 		if strings.EqualFold(option[i], "barostat") {
 			input.Barostat = option[i+1]
 		}
-
+		if strings.EqualFold(option[i], "restraintmask") {
+			input.Ntr = "1"
+			input.Restraintmask = option[i+1]
+		}
+		if strings.EqualFold(option[i], "restraint_wt") {
+			input.Restraint_wt = option[i+1]
+		}
 	}
 	var result []string
 	result = append(result, "Minimization: "+input.Name+"\n")
 	result = append(result, " &cntrl\n")
 	result = append(result, "imin = 1, ioutfm = 1, ntxo = 2,ntc = 1, ntf = 1, ntb = 1,"+"\n")
-	result = append(result, "nstlim = "+input.Nstlim+",")
+	result = append(result, "maxcyc = "+input.Maxcyc+",")
 	result = append(result, "dt = "+input.Dt+",")
-	result = append(result, "ntx = "+input.Irest+",")
+	result = append(result, "ntxo = "+input.Ntxo+",")
 	result = append(result, "ntwx = "+input.Ntwx+",")
 	result = append(result, "ntpr = "+input.Ntpr+",")
 	result = append(result, "ntwr = "+input.Ntwr+",")
 	result = append(result, "cut = "+input.Cut+",")
+	result = append(result, "\n")
+	result = append(result, "ntr = "+input.Ntr+",")
+	result = append(result, "restraintmask = "+input.Restraintmask+",")
+	result = append(result, "restraint_wt = "+input.Restraint_wt+",")
 	result = append(result, "\n")
 	result = append(result, "&end\n")
 	return result
@@ -470,6 +482,13 @@ func (input Input) CreateMdInput(option ...string) []string {
 			input.Ntc = option[i+1]
 			input.Ntf = option[i+1]
 		}
+		if strings.EqualFold(option[i], "restraintmask") {
+			input.Ntr = "1"
+			input.Restraintmask = option[i+1]
+		}
+		if strings.EqualFold(option[i], "restraint_wt") {
+			input.Restraint_wt = option[i+1]
+		}
 
 	}
 	if input.Irest != "0" {
@@ -482,6 +501,7 @@ func (input Input) CreateMdInput(option ...string) []string {
 	result = append(result, " &cntrl\n")
 	result = append(result, "imin = 0,ig = -1,ntwv = -1, ioutfm = 1, ntxo = 2, iwrap = 0,"+"\n")
 	result = append(result, "ntmin = "+input.Ntmin+",")
+	result = append(result, "nstlim = "+input.Nstlim+",")
 	result = append(result, "ntx = "+input.Ntx+",")
 	result = append(result, "irest = "+input.Irest+",")
 	result = append(result, "ntwx = "+input.Ntwx+",")
@@ -492,6 +512,10 @@ func (input Input) CreateMdInput(option ...string) []string {
 	result = append(result, "ntf = "+input.Ntf+",")
 	result = append(result, "ntb = "+input.Ntb+",")
 	result = append(result, "cut = "+input.Cut+",")
+	result = append(result, "\n")
+	result = append(result, "ntr = "+input.Ntr+",")
+	result = append(result, "restraintmask = "+input.Restraintmask+",")
+	result = append(result, "restraint_wt = "+input.Restraint_wt+",")
 	result = append(result, "\n")
 	func() {
 		if strings.EqualFold(input.Thermo, "berendsen") {
@@ -524,6 +548,7 @@ func (input Input) CreateMdInput(option ...string) []string {
 			}
 		}()
 	}
+	result = append(result, "&end\n")
 	return result
 }
 
